@@ -270,18 +270,6 @@
       this.getRecipeListData()
     },
     mounted: function () {
-      gantt.attachEvent("onBeforeAutoSchedule",function(taskId){
-        // any custom logic here
-        gantt.message("Recalculating project schedule...");
-        return true;
-      });
-      gantt.attachEvent("onAfterTaskAutoSchedule",function(task,start,link,predecessor){
-        gantt.message({
-          text: "<b>" + task.text + "</b> has been rescheduled to " + gantt.templates.task_date(start) + " due to <b>" + predecessor.text + "</b> constraint",
-          expire: 4000
-        });
-        // any custom logic here
-      });
       gantt.config.auto_scheduling = true;
       gantt.config.auto_scheduling_strict = true;
       gantt.config.xml_date="%Y-%m-%d %H:%i"

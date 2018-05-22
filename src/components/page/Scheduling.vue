@@ -3,9 +3,9 @@
     <!--<v-pageTitle vtitle="FormLayouts"></v-pageTitle>-->
     <el-row>
       <el-col :span="24">
-        <el-card class="box-card">
+        <el-card class="box-card" ref="boxCard">
           <!--<el-button style="float: right; padding: 7px 0 0" >操作按钮</el-button>-->
-          <el-tabs v-model="activeName">
+          <el-tabs v-model="activeName" id="tabs">
             <el-tab-pane label="计划追踪" name="first">
               <gantt class="gantt" :tasks="tasks" :config="config" ref="gantt" :baseline="baseline"></gantt>
               <!--<div class="gantt" ref="gantt3"></div>-->
