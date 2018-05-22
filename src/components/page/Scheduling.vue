@@ -7,7 +7,8 @@
           <!--<el-button style="float: right; padding: 7px 0 0" >操作按钮</el-button>-->
           <el-tabs v-model="activeName">
             <el-tab-pane label="计划追踪" name="first">
-              <div class="gantt" ref="gantt3"></div>
+              <gantt class="gantt" :tasks="tasks" :config="config" ref="gantt" :baseline="baseline"></gantt>
+              <!--<div class="gantt" ref="gantt3"></div>-->
               <!--<div style="border-bottom: 1px #cecece solid;border-right: 1px #cecece solid;border-left: 1px #cecece solid;">我们都是中国人🇨🇳</div>-->
             </el-tab-pane>
             <!--<el-tab-pane label="操作记录" name="second">987654345</el-tab-pane>-->
@@ -27,11 +28,13 @@
 <script>
   import vPageTitle from '../common/pageTitle.vue'
   import newPlan from './NewPlan.vue'
-  import 'dhtmlx-gantt'
+  import Gantt from '../gantt/Gantt.vue'
+
   export default {
     components:{
       vPageTitle,
-      newPlan
+      newPlan,
+      Gantt
     },
     data () {
       return {
@@ -39,11 +42,31 @@
         tasks: {
           data: []
         },
-        interval: ''
+        interval: '',
+        config: {
+          xml_date: '%Y-%m-%d %H:%i',
+          scale_unit: "hour",
+          step: 1,
+          date_scale: "%g %a",
+          min_column_width: 20,
+          duration_unit: "minute",
+          duration_step: 1,
+          scale_height: 75,
+          row_height: 30,
+          fit_tasks: true,
+          drag_project: true,
+          readonly: true,
+          task_height: 16,
+          row_height: 40,
+          subscales: [
+            {unit: "day", step: 1, date: "%j %F, %l"},
+            {unit: "minute", step: 5, date: "%i"}
+          ]
+        },
+        baseline: 'Planned'
       }
     },
     mounted: function () {
-      this.initGantt()
     },
     created () {
       this.getOrderList()
@@ -74,46 +97,23 @@
         this.$ajax.get(`order/selectById?id=${value}`)
           .then(response => {
             this.tasks.data = this.tasks.data.concat(response.data.data)
-            gantt.clearAll()
-            gantt.parse(this.tasks)
+            this.$refs.gantt.clearAll()
+            this.$refs.gantt.parse(this.tasks)
           })
           .catch(error => {
             console.log(error)
           })
-      },
-      initGantt () {
-        gantt.config.xml_date="%Y-%m-%d %H:%i"
-        gantt.config.scale_unit = "hour" // 即X轴的单位，包括："minute", "hour", "day", "week", "month", "year"
-        gantt.config.step = 1
-        gantt.config.date_scale = "%g %a"
-//      gantt.config.date_scale = "%F, %Y"
-        gantt.config.min_column_width = 20
-        gantt.config.duration_unit = "minute"
-        gantt.config.duration_step = 1
-        gantt.config.scale_height = 75
-        gantt.config.row_height = 30
-        gantt.config.fit_tasks = true
-        gantt.config.drag_project = true
-        gantt.config.readonly = true
-
-        gantt.config.subscales = [
-          {unit: "day", step: 1, date: "%j %F, %l"},
-          {unit: "minute", step: 5, date: "%i"}
-        ]
-        gantt.init(this.$refs.gantt3)
-        gantt.parse(this.tasks)
       }
     },
     beforeDestroy: function () {
       var that = this
       clearInterval(that.interval)
-      gantt.clearAll()
+      this.$refs.gantt.clearAll()
     }
   }
 </script>
 
 <style scoped>
-  @import "~dhtmlx-gantt/codebase/dhtmlxgantt.css";
   .gantt{
     width: 100%;
     height: 400px;
