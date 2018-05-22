@@ -25,6 +25,11 @@
         default: ''
       }
     },
+    data () {
+      return {
+        data: []
+      }
+    },
     methods: {
       $_initGanttEvents: function () {
         if(gantt.$_eventsInitialized)
@@ -88,17 +93,58 @@
       },
       parse (data) {
         gantt.parse(data)
+      },
+      getTaskFitValue (task) {
+        var taskStartPos = gantt.posFromDate(task.start_date),
+          taskEndPos = gantt.posFromDate(task.end_date);
+
+        var width = taskEndPos - taskStartPos;
+        var textWidth = (task.text || "").length * gantt.config.font_width_ratio;
+
+        if (width < textWidth) {
+          var ganttLastDate = gantt.getState().max_date;
+          var ganttEndPos = gantt.posFromDate(ganttLastDate);
+          if (ganttEndPos - taskEndPos < textWidth) {
+            return "left"
+          }
+          else {
+            return "right"
+          }
+        }
+        else {
+          return "center";
+        }
       }
     },
 
     mounted () {
+      let that = this
       this.$_initGanttEvents()
       for (let key in this.config) {
         gantt.config[key] = this.config[key]
       }
+      gantt.config.font_width_ratio = 7;
+      gantt.templates.leftside_text = function leftSideTextTemplate(start, end, task) {
+        if (that.getTaskFitValue(task) === "left") {
+          return task.text
+        }
+        return ""
+      };
+      gantt.templates.rightside_text = function rightSideTextTemplate(start, end, task) {
+        if (that.getTaskFitValue(task) === "right") {
+          return task.text
+        }
+        return ""
+      };
+      gantt.templates.task_text = function taskTextTemplate(start, end, task) {
+        if (that.getTaskFitValue(task) === "center") {
+          return task.text
+        }
+        return ""
+      };
       gantt.locale.labels.section_baseline = this.baseline
       gantt.init(this.$refs.gantt)
-      gantt.parse(this.$props.tasks)
+      gantt.parse(this.tasks)
     }
   }
 </script>
@@ -113,6 +159,10 @@
     height: 12px;
     background: #ffd180;
     border: 1px solid rgb(255,153,0);
+  }
+  .gantt_parent {
+    background-color: #65c16f;
+    border: 1px solid #3c9445;
   }
   .gantt_task_line, .gantt_line_wrapper {
     margin-top: -9px;
