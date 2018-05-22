@@ -198,7 +198,8 @@
               </el-form-item>
             </el-form>
           </div>
-          <div class="gantt6" ref="gantt6"></div>
+          <!--<gantt class="gantt" :tasks="tasksData" :config="config" ref="gantt" :locale="locale"></gantt>-->
+          <div ref="gantt" class="gantt"></div>
         </el-tab-pane>
       </el-tabs>
     </el-card>
@@ -207,6 +208,7 @@
 
 <script>
   import 'dhtmlx-gantt'
+  import 'dhtmlx-gantt/codebase/ext/dhtmlxgantt_auto_scheduling.js'
   import vPageTitle from '../common/pageTitle.vue';
   import NewFormula from './NewFormula.vue';
   export default {
@@ -236,7 +238,12 @@
             { min: 3, max: 20, message: '长度在 3 到 20 个字符', trigger: 'blur' }
           ]
         },
-        tasksData: {
+        tasks: {
+          "data": [
+            {"id": 11, "text": "Project #1", type: gantt.config.types.project, "progress": 0.6, "open": true}
+          ],
+          "links": [
+          ]
         },
         opts: [
           {key:1, label: "配方名称"},
@@ -263,6 +270,20 @@
       this.getRecipeListData()
     },
     mounted: function () {
+      gantt.attachEvent("onBeforeAutoSchedule",function(taskId){
+        // any custom logic here
+        gantt.message("Recalculating project schedule...");
+        return true;
+      });
+      gantt.attachEvent("onAfterTaskAutoSchedule",function(task,start,link,predecessor){
+        gantt.message({
+          text: "<b>" + task.text + "</b> has been rescheduled to " + gantt.templates.task_date(start) + " due to <b>" + predecessor.text + "</b> constraint",
+          expire: 4000
+        });
+        // any custom logic here
+      });
+      gantt.config.auto_scheduling = true;
+      gantt.config.auto_scheduling_strict = true;
       gantt.config.xml_date="%Y-%m-%d %H:%i"
       gantt.config.scale_unit = "hour" // 即X轴的单位，包括："minute", "hour", "day", "week", "month", "year"
       gantt.config.step = 1
@@ -289,8 +310,8 @@
       ]
       gantt.locale.labels.section_priority = "priority"
       gantt.locale.labels.section_equipment = "equipment"
-      gantt.init(this.$refs.gantt6)
-//      gantt.parse(this.tasks)
+      gantt.init(this.$refs.gantt)
+      gantt.parse(this.tasks)
     },
     methods: {
       searchBtnClick () {
@@ -543,14 +564,15 @@
     },
     components:{
       vPageTitle,
-      NewFormula
+      NewFormula,
+      // Gantt
     }
   }
 </script>
 
 <style>
   @import "~dhtmlx-gantt/codebase/dhtmlxgantt.css";
-  .gantt6{
+  .gantt{
     width: 100%;
     height: 400px;
   }
