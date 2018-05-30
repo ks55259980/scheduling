@@ -251,7 +251,8 @@
           {key:3, label: "操作步骤"}
         ],
         equipmentopts: [],
-        pushFormulaTitle: '创建配方'
+        pushFormulaTitle: '创建配方',
+        gantt1: ''
       }
     },
     computed: {
@@ -270,36 +271,37 @@
       this.getRecipeListData()
     },
     mounted: function () {
-      gantt.config.auto_scheduling = true;
-      gantt.config.auto_scheduling_strict = true;
-      gantt.config.xml_date="%Y-%m-%d %H:%i"
-      gantt.config.scale_unit = "hour" // 即X轴的单位，包括："minute", "hour", "day", "week", "month", "year"
-      gantt.config.step = 1
-      gantt.config.date_scale = "%g %a"
+      this.gantt1 = Gantt.getGanttInstance()
+      this.gantt1.config.auto_scheduling = true;
+      this.gantt1.config.auto_scheduling_strict = true;
+      this.gantt1.config.xml_date="%Y-%m-%d %H:%i"
+      this.gantt1.config.scale_unit = "hour" // 即X轴的单位，包括："minute", "hour", "day", "week", "month", "year"
+      this.gantt1.config.step = 1
+      this.gantt1.config.date_scale = "%g %a"
 //      gantt.config.date_scale = "%F, %Y"
-      gantt.config.min_column_width = 20
-      gantt.config.duration_unit = "minute"
-      gantt.config.duration_step = 1
-      gantt.config.scale_height = 75
-      gantt.config.row_height = 24
+      this.gantt1.config.min_column_width = 20
+      this.gantt1.config.duration_unit = "minute"
+      this.gantt1.config.duration_step = 1
+      this.gantt1.config.scale_height = 75
+      this.gantt1.config.row_height = 24
 //      gantt.config.fit_tasks = true
 //      gantt.config.drag_project = true
-      gantt.config.readonly = false
-      gantt.config.subscales = [
+      this.gantt1.config.readonly = false
+      this. gantt1.config.subscales = [
         {unit: "day", step: 1, date: "%j %F, %l"},
         {unit: "minute", step: 1, date: "%i"}
       ]
 
-      gantt.config.lightbox.sections = [
+      this. gantt1.config.lightbox.sections = [
         {name:"priority",    height:22, map_to:"priority", type:"select", options:this.opts},
         {name:"description", height:38, map_to:"text", type:"textarea", focus:true},
         {name:"equipment",    height:22, map_to:"equipment", type:"select", options:this.equipmentopts},
         {name:"time",        height:72, map_to:"auto", type:"duration", time_format:["%d","%m","%Y","%H:%i"]}
       ]
-      gantt.locale.labels.section_priority = "priority"
-      gantt.locale.labels.section_equipment = "equipment"
-      gantt.init(this.$refs.gantt)
-      gantt.parse(this.tasks)
+      this.gantt1.locale.labels.section_priority = "priority"
+      this.gantt1.locale.labels.section_equipment = "equipment"
+      this.gantt1.init(this.$refs.gantt)
+      this.gantt1.parse(this.tasks)
     },
     methods: {
       searchBtnClick () {
@@ -396,7 +398,7 @@
         console.log(tab, event);
       },
       beforeDestroy: function () {
-        gantt.clearAll()
+        this.gantt1.clearAll()
       },
       lineChange (value) {
         this.getSku()
@@ -461,7 +463,7 @@
           this.$message('请选择前SKU')
           return
         }
-        var data = gantt.serialize().data
+        var data = this.gantt1.serialize().data
         if (data.length == 0) {
           this.$message('请添加配方信息')
           return
@@ -548,7 +550,7 @@
       }
   },
     beforeDestroy: function () {
-      gantt.clearAll()
+      this.gantt1.clearAll()
     },
     components:{
       vPageTitle,

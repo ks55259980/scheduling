@@ -13,7 +13,7 @@ import qs from 'qs'
 Vue.use(ElementUI);
 Vue.config.productionTip = false
 Vue.prototype.$ajax = axios
-axios.defaults.baseURL = 'http://package.dpdaidai.top/'
+axios.defaults.baseURL = 'http://package1.dpdaidai.top/packagePlan/'
 axios.interceptors.request.use((config) => {
   if (config.method === 'post') {
     config.data = qs.stringify(config.data)
