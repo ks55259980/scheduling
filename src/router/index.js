@@ -20,7 +20,7 @@ import PIWatch from '@/components/page/PIWatch';
 Vue.use(Router)
 
 export default new Router({
-  mode:'history',
+  mode:'hash',
   base:__dirname,
   routes: [
     {
