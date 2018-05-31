@@ -13,6 +13,7 @@
     "dhtmlx-gantt": "^5.1.0",
     "echarts": "^3.8.5",
     "element-ui": "^2.3.7",
+    "font-awesome": "^4.7.0",
     "vue": "^2.2.1",
     "vue-echarts-v3": "^1.0.3",
     "vue-markdown": "^2.1.3",

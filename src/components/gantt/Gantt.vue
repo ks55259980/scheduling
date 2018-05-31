@@ -186,7 +186,6 @@
 
 <style>
   @import "~dhtmlx-gantt/codebase/dhtmlxgantt.css";
-  @import "~dhtmlx-gantt/codebase/font-awesome.min.css";
   .baseline {
     position: absolute;
     border-radius: 2px;
