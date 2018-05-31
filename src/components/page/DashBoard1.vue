@@ -7,7 +7,7 @@
         <span>计划跟踪</span>
         <el-button style="float: right; padding: 3px 0" type="text">操作按钮</el-button>
       </div>
-      <div class="gantt" ref="gantt1"></div>
+      <gantt class="gantt" :tasks="tasks" :config="config"></gantt>
     </el-card>
 
     <el-card>
@@ -63,20 +63,29 @@
 </template>
 
 <script type="text/ecmascript-6">
-  import 'dhtmlx-gantt'
-//  import vPageTitle from '../common/pageTitle.vue';
+  import Gantt from '../gantt/Gantt.vue'
+  //  import vPageTitle from '../common/pageTitle.vue';
   export default {
     name: 'gantt1',
     components:{
+      Gantt
 //      vPageTitle
     },
     data () {
       return {
         tasks: {
-            data: [
-            ],
-            links: [
-            ]
+          data: [
+            {id: 1, text: 'Task #1', start_date: '15-04-2017', duration: 3, progress: 0.6, planned_start: '15-04-2017', planned_end: '20-04-2017'},
+            {id: 2, text: 'Task #2', start_date: '18-04-2017', duration: 3, progress: 0.4}
+          ],
+          links: [
+            {id: 1, source: 1, target: 2, type: '0'}
+          ]
+        },
+        config: {
+          readonly: true,
+          scaleUnit: 'day',
+          xmlDate: '%Y-%m-%d %H:%i'
         },
         tableData: [{
           date: '2016-05-02',
@@ -95,21 +104,11 @@
     },
 
     mounted: function () {
-//      gantt.config.readonly = true
-      gantt.config.scale_unit = "day" // 即X轴的单位，包括："minute", "hour", "day", "week", "month", "year"
-      gantt.config.readonly = true
-      gantt.config.xml_date="%Y-%m-%d %H:%i"
-      gantt.init(this.$refs.gantt1)
-      gantt.parse(this.tasks)
-    },
-    beforeDestroy: function () {
-      gantt.clearAll()
     },
   }
 </script>
 
 <style>
-  @import "~dhtmlx-gantt/codebase/dhtmlxgantt.css";
   .planCard{
     margin-bottom: 15px;
   }

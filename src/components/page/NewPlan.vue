@@ -290,7 +290,7 @@ export default {
       }).then(response => {
         console.log(response.data)
         if(response.data.code === 200) {
-          alert('好险，侥幸成功了')
+          alert('新建计划完成')
         } else {
           alert('不知道当讲不当讲，失败了')
         }
